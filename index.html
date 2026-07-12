@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Uswap — The Quad Journal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg: #FAF7F2;
+    --paper: #FFFFFF;
+    --maroon: #7A0A3D;
+    --maroon-soft: #9C3A63;
+    --gold: #B99457;
+    --gold-soft: #D7C6A2;
+    --ink: #211018;
+    --ink-soft: #6f5c64;
+    --rule: #E4DCD0;
+    --focus: #1C6FD9;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #141013;
+    --paper: #1C1519;
+    --maroon: #E8578D;
+    --maroon-soft: #C9769A;
+    --gold: #D9B874;
+    --gold-soft: #8C7A5C;
+    --ink: #F1E9EC;
+    --ink-soft: #B4A3AB;
+    --rule: #2E2429;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141013;
+      --paper: #1C1519;
+      --maroon: #E8578D;
+      --maroon-soft: #C9769A;
+      --gold: #D9B874;
+      --gold-soft: #8C7A5C;
+      --ink: #F1E9EC;
+      --ink-soft: #B4A3AB;
+      --rule: #2E2429;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Optima, "Century Gothic", "Segoe UI", Futura, Verdana, sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .display {
+    font-family: "Big Caslon", Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-weight: 400;
+    text-wrap: balance;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  em, .italic { font-style: italic; color: var(--maroon); }
+
+  .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--maroon);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  a { color: var(--maroon); }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  button { font-family: inherit; cursor: pointer; background: none; border: none; }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .masthead-top {
+    max-width: 980px; margin: 0 auto; padding: 28px 28px 18px;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  }
+  .masthead-title {
+    font-family: "Big Caslon", Baskerville, Georgia, serif;
+    font-size: 30px;
+    letter-spacing: 0.01em;
+  }
+  .masthead-nav {
+    max-width: 980px; margin: 0 auto;
+    padding: 0 28px 16px;
+    display: flex; gap: 28px; flex-wrap: wrap;
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+  .masthead-nav button {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+    padding: 4px 0; border-bottom: 2px solid transparent;
+  }
+  .masthead-nav button[aria-selected="true"] { color: var(--maroon); border-bottom-color: var(--maroon); }
+  .masthead-nav button:hover { color: var(--ink); }
+
+  main { max-width: 980px; margin: 0 auto; padding: 0 28px 120px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 64px 0 56px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+  }
+  .hero h1 { font-size: clamp(34px, 5vw, 54px); line-height: 1.12; max-width: 16ch; }
+  .hero p.lede {
+    font-size: 19px; color: var(--ink-soft); max-width: 46ch; margin-top: 24px; font-style: italic;
+  }
+  .hero-ctas { margin-top: 32px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .btn-fill {
+    background: var(--maroon); color: var(--bg); padding: 12px 26px; border-radius: 2px;
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-block;
+  }
+  .btn-gold {
+    background: var(--gold); color: #241019; padding: 12px 26px; border-radius: 2px;
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-block;
+    transition: opacity 0.15s ease;
+  }
+  .btn-gold:hover { opacity: 0.82; }
+
+  .colophon-card {
+    border-left: 1px solid var(--rule);
+    padding-left: 32px;
+  }
+  .colophon-card .eyebrow { margin-bottom: 10px; }
+  .colophon-card dl { margin: 0; }
+  .colophon-card dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-top: 16px; }
+  .colophon-card dt:first-child { margin-top: 0; }
+  .colophon-card dd { margin: 4px 0 0; font-size: 16px; }
+
+  /* ---------- Section head ---------- */
+  .section-head { padding: 64px 0 8px; }
+  .section-head h2 { font-size: clamp(26px, 3.4vw, 36px); max-width: 22ch; }
+  .rule { height: 1px; background: var(--rule); border: none; margin: 0; }
+
+  /* ---------- Feature editorial grid ---------- */
+  .editorial-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 24px;
+  }
+  .editorial-item {
+    padding: 28px 32px 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .editorial-item:nth-child(odd) { border-right: 1px solid var(--rule); }
+  .editorial-item:nth-child(odd) { padding-right: 32px; }
+  .editorial-item:nth-child(even) { padding-left: 32px; padding-right: 0; }
+  .editorial-item .num { font-size: 12px; letter-spacing: 0.1em; color: var(--maroon); text-transform: uppercase; }
+  .editorial-item h3 { font-size: 20px; margin: 6px 0 8px; font-weight: 400; }
+  .editorial-item p { color: var(--ink-soft); font-size: 15px; margin: 0; max-width: 42ch; }
+  .editorial-item .tags { margin-top: 10px; font-size: 13px; color: var(--ink-soft); font-style: italic; }
+
+  /* ---------- Steps (real sequence) ---------- */
+  .steps { margin-top: 24px; }
+  .step {
+    display: grid; grid-template-columns: 90px 1fr; gap: 20px;
+    padding: 26px 0; border-bottom: 1px solid var(--rule);
+  }
+  .step:last-child { border-bottom: none; }
+  .step .ord { font-family: "Big Caslon", Baskerville, serif; font-style: italic; font-size: 20px; color: var(--maroon); }
+  .step h3 { font-size: 18px; font-weight: 400; margin-bottom: 6px; }
+  .step p { margin: 0; color: var(--ink-soft); font-size: 15.5px; max-width: 56ch; }
+
+  /* ---------- Sub tabs ---------- */
+  .subtabs { display: flex; gap: 32px; margin: 32px 0 8px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+  .subtabs button { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 10px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .subtabs button[aria-selected="true"] { color: var(--maroon); border-bottom-color: var(--maroon); }
+
+  .faq-item { border-bottom: 1px solid var(--rule); padding: 22px 0; max-width: 68ch; }
+  .faq-item summary { font-size: 17px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: "Read"; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--maroon); flex-shrink: 0; align-self: center; }
+  .faq-item[open] summary::after { content: "Close"; }
+  .faq-item p { color: var(--ink-soft); margin: 14px 0 0; font-size: 15.5px; }
+
+  .legal { max-width: 68ch; margin-top: 24px; }
+  .legal h3 { font-size: 19px; font-weight: 400; margin: 32px 0 8px; }
+  .legal h3:first-child { margin-top: 0; }
+  .legal p, .legal li { color: var(--ink-soft); font-size: 15.5px; }
+  .legal .updated { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--maroon); }
+  .legal ul { padding-left: 20px; }
+
+  .guideline-list { margin-top: 24px; max-width: 68ch; }
+  .guideline-item { display: grid; grid-template-columns: 28px 1fr; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--rule); }
+  .guideline-item:last-child { border-bottom: none; }
+  .guideline-item .mark { font-family: "Big Caslon", Baskerville, serif; font-style: italic; color: var(--maroon); font-size: 18px; }
+  .guideline-item h3 { font-size: 16.5px; font-weight: 400; margin-bottom: 4px; }
+  .guideline-item p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 24px; }
+  .contact-card h3 { font-size: 19px; font-weight: 400; margin-bottom: 10px; }
+  .contact-card p { color: var(--ink-soft); font-size: 15px; }
+  .contact-card ol { color: var(--ink-soft); font-size: 15px; padding-left: 20px; }
+  .contact-card ol li { margin-bottom: 8px; }
+
+  .about-block { padding: 32px 0; border-bottom: 1px solid var(--rule); max-width: 68ch; }
+  .about-block:last-child { border-bottom: none; }
+  .about-block h3 { font-size: 20px; font-weight: 400; margin-bottom: 10px; }
+  .about-block p { color: var(--ink-soft); font-size: 15.5px; }
+  .store-badges { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+  .store-badge { font-size: 13px; letter-spacing: 0.05em; color: var(--ink-soft); border-bottom: 1px dotted var(--rule); padding-bottom: 4px; }
+  footer {
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+  }
+  .footer-inner {
+    max-width: 980px; margin: 0 auto; padding: 40px 28px;
+    display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: baseline;
+  }
+  footer .colophon { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  footer .masthead-title { font-size: 18px; }
+
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; }
+    .colophon-card { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 24px; }
+    .editorial-grid { grid-template-columns: 1fr; }
+    .editorial-item:nth-child(odd) { border-right: none; padding-right: 0; }
+    .editorial-item:nth-child(even) { padding-left: 0; }
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="masthead-title">Uswap</div>
+  </div>
+  <nav class="masthead-nav" id="primary-nav" aria-label="Primary">
+    <button data-nav="home" aria-selected="true">Home</button>
+    <button data-nav="faq" aria-selected="false">FAQ &amp; Legal</button>
+    <button data-nav="guidelines" aria-selected="false">Guidelines</button>
+    <button data-nav="support" aria-selected="false">Support</button>
+    <button data-nav="about" aria-selected="false">About &amp; Press</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section data-page="home">
+    <div class="hero">
+      <div>
+        <span class="eyebrow">A marketplace, verified by campus</span>
+        <h1>Need something on campus? <em>Uswap</em> is where you'll find it.</h1>
+        <p class="lede">Buy the textbook. Book the tutor. Get the ride across campus. Every listing belongs to a verified student at your own school.</p>
+        <div class="hero-ctas">
+          <a class="btn-fill" href="#" data-nav-link="about">Get the app</a>
+          <a class="btn-gold" href="#" data-nav-link="faq" data-sub-link="privacy">Privacy Policy</a>
+        </div>
+      </div>
+      <div class="colophon-card">
+        <span class="eyebrow">Process</span>
+        <dl>
+          <dt>Access</dt><dd>Verified students only</dd>
+          <dt>Verification</dt><dd>.edu email or student ID review</dd>
+          <dt>Categories</dt><dd>Marketplace &amp; service storefronts</dd>
+          <dt>Settlement</dt><dd>Stripe · Apple Pay · Google Pay</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="editorial-grid">
+      <div class="editorial-item"><span class="num">Marketplace</span><h3>Buy &amp; sell directly</h3><p>Textbooks, electronics, and the odds and ends that move fastest right before finals.</p><div class="tags">Beauty &middot; Tech &middot; Academic &middot; Transport</div></div>
+      <div class="editorial-item"><span class="num">Storefronts</span><h3>Beauty &amp; personal care</h3><p>A styling chair or lash appointment two buildings from your dorm.</p><div class="tags">Makeup &middot; Hair styling &middot; Braiding &middot; Lashes &middot; Nails</div></div>
+      <div class="editorial-item"><span class="num">Storefronts</span><h3>Tech</h3><p>Fellow students who actually know their stuff, on call.</p><div class="tags">Website &amp; app development &middot; PC repair</div></div>
+      <div class="editorial-item"><span class="num">Storefronts</span><h3>Academic</h3><p>Help that fits neatly between two lectures.</p><div class="tags">Tutoring &middot; Interview prep</div></div>
+      <div class="editorial-item"><span class="num">Storefronts</span><h3>Creative</h3><p>Portfolio-grade work, at campus prices.</p><div class="tags">Photography &amp; videography &middot; Graphic design &middot; Music production &amp; DJ services</div></div>
+      <div class="editorial-item"><span class="num">Storefronts</span><h3>Transportation &amp; fitness</h3><p>The everyday errands, covered by someone nearby.</p><div class="tags">Driving &amp; rides &middot; Personal training</div></div>
+    </div>
+
+    <div class="section-head">
+      <span class="eyebrow">The process</span>
+      <h2>From verification to a finished trade.</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="ord">First</div><div><h3>Verify your student status</h3><p>Sign up with your .edu email, or upload a student ID for manual review. Nothing else unlocks until this clears.</p></div></div>
+      <div class="step"><div class="ord">Second</div><div><h3>List, browse, or book</h3><p>Post a marketplace item or a service storefront — or browse what other verified students on your campus are offering.</p></div></div>
+      <div class="step"><div class="ord">Third</div><div><h3>Chat, then agree</h3><p>Every listing opens straight into a real conversation. Negotiate a price, or propose trading your own item or service instead.</p></div></div>
+      <div class="step"><div class="ord">Fourth</div><div><h3>Meet on campus, or pay in-app</h3><p>Send or receive payment right inside the chat — Apple Pay, Google Pay, or card, processed securely by Stripe.</p></div></div>
+      <div class="step"><div class="ord">Fifth</div><div><h3>Leave a review</h3><p>Rate the swap or service so trust builds campus-wide, one real transaction at a time.</p></div></div>
+    </div>
+  </section>
+
+  <!-- FAQ & LEGAL -->
+  <section data-page="faq" hidden>
+    <div class="section-head"><span class="eyebrow">Reference</span><h2>FAQ &amp; Legal</h2></div>
+    <div class="subtabs" id="faq-subtabs">
+      <button data-sub="faq" aria-selected="true">FAQ</button>
+      <button data-sub="privacy" aria-selected="false">Privacy Policy</button>
+      <button data-sub="terms" aria-selected="false">Terms of Service</button>
+    </div>
+    <div data-sub-panel="faq">
+      <details class="faq-item" open><summary>What is Uswap?</summary><p>Uswap is a marketplace and service-exchange app built only for verified college students at participating schools — list items, book services like tutoring or hair styling, propose swaps, chat, and pay another student, all without leaving campus.</p></details>
+      <details class="faq-item"><summary>How does student verification work?</summary><p>Sign up with your school's .edu email, or if that's not available, upload a photo of your student ID for manual review. You can't message, list, pay, or get paid until you're verified.</p></details>
+      <details class="faq-item"><summary>What can I list or book?</summary><p>Marketplace items (books, electronics, and more) plus service storefronts across Beauty, Tech, Academic, Fitness, Creative, and Transportation — think tutoring, braiding, PC repair, photography, personal training, or a ride across campus.</p></details>
+      <details class="faq-item"><summary>What's a swap?</summary><p>Instead of paying, you can propose trading your own item or service for someone else's listing. Nothing changes hands until both people accept the proposal in chat.</p></details>
+      <details class="faq-item"><summary>How do payments work — is it safe?</summary><p>Payments are processed by Stripe with Apple Pay, Google Pay, or card. Uswap never sees or stores your full card number — only that a payment happened, its amount, and its status.</p></details>
+      <details class="faq-item"><summary>Can I get a refund if something goes wrong?</summary><p>Uswap facilitates the introduction and chat, but the swap or service itself is an agreement between two students. Report an issue and we'll review the chat and payment record, though we can't guarantee a resolution.</p></details>
+      <details class="faq-item"><summary>How do reviews work?</summary><p>After a completed service or swap, both people can leave a rating and review. Reviews must reflect a real transaction — fake or retaliatory reviews get removed.</p></details>
+      <details class="faq-item"><summary>Can I block or report someone?</summary><p>Yes — from any chat's options menu you can block a user immediately, or report content for our team to review.</p></details>
+      <details class="faq-item"><summary>How do I delete my account?</summary><p>Settings &rarr; Account &rarr; Delete account. We remove your profile, listings, storefront, and messages within a few business days — see the Support tab for details.</p></details>
+    </div>
+    <div data-sub-panel="privacy" class="legal" hidden></div>
+    <div data-sub-panel="terms" class="legal" hidden></div>
+  </section>
+
+  <!-- GUIDELINES -->
+  <section data-page="guidelines" hidden>
+    <div class="section-head"><span class="eyebrow">Community</span><h2>Community Guidelines</h2><p style="color:var(--ink-soft); font-size:15.5px; max-width:60ch; margin-top:12px;">Uswap only works because the students on it act like students who'll see each other in class next week. Here's what we expect.</p></div>
+    <div class="guideline-list">
+      <div class="guideline-item"><div class="mark">i</div><div><h3>Be a real, currently-enrolled student</h3><p>One account per person. Creating a new account to dodge a block or suspension isn't allowed.</p></div></div>
+      <div class="guideline-item"><div class="mark">ii</div><div><h3>Trade honestly</h3><p>Accurate pricing, condition, description, and photos — no counterfeit, stolen, or illegal listings.</p></div></div>
+      <div class="guideline-item"><div class="mark">iii</div><div><h3>No academic dishonesty</h3><p>Don't offer or request paying someone to write papers, complete assignments, or take exams — that violates campus policy, not just ours.</p></div></div>
+      <div class="guideline-item"><div class="mark">iv</div><div><h3>Treat people with respect</h3><p>No harassment, threats, discrimination, or impersonating another user.</p></div></div>
+      <div class="guideline-item"><div class="mark">v</div><div><h3>Keep reviews real</h3><p>Only review a transaction that actually happened — fake, retaliatory, or paid-for reviews get removed.</p></div></div>
+      <div class="guideline-item"><div class="mark">vi</div><div><h3>Meet safely</h3><p>Public, well-lit campus spots for in-person exchanges. Tell a friend, trust your instincts, and block or report anyone who makes you uncomfortable.</p></div></div>
+      <div class="guideline-item"><div class="mark">vii</div><div><h3>Consequences</h3><p>We may remove content, suspend, or permanently terminate accounts that break these guidelines, with or without notice, depending on severity.</p></div></div>
+    </div>
+  </section>
+
+  <!-- SUPPORT -->
+  <section data-page="support" hidden>
+    <div class="section-head"><span class="eyebrow">We've got you</span><h2>Support</h2></div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h3>Contact us</h3>
+        <p>Questions, bug reports, safety concerns, or anything else — we read every message.</p>
+      </div>
+      <div class="contact-card">
+        <h3>Account deletion &amp; data removal</h3>
+        <p>You're always in control of your account:</p>
+        <ol>
+          <li>Open the app &rarr; Settings &rarr; Account &rarr; Delete account</li>
+          <li>Your profile, listings, storefront, and messages are permanently removed within a few business days</li>
+          <li>Completed payment records are retained only where required by law (tax &amp; fraud prevention)</li>
+        </ol>
+        <p>Can't access the app? Email <a href="mailto:support@joinuswap.com">support@joinuswap.com</a> and we'll process the deletion for you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT & PRESS -->
+  <section data-page="about" hidden>
+    <div class="section-head"><span class="eyebrow">Off the record</span><h2>About &amp; Press</h2></div>
+
+    <div class="about-block">
+      <h3>Company</h3>
+      <p>Uswap is a campus marketplace and service-exchange app for verified college students — a place to buy, sell, and swap.</p>
+    </div>
+
+    <div class="about-block">
+      <h3>Get the app</h3>
+      <p>Uswap is currently in development. App Store and Google Play links will appear here at launch.</p>
+      <div class="store-badges">
+        <div class="store-badge">App Store — Coming soon</div>
+        <div class="store-badge">Google Play — Coming soon</div>
+      </div>
+    </div>
+
+    <div class="about-block">
+      <h3>Press kit</h3>
+      <p>For interview requests, brand assets, or press inquiries, contact <a href="mailto:support@joinuswap.com">support@joinuswap.com</a>.</p>
+    </div>
+
+    <div class="about-block">
+      <h3>Accessibility statement</h3>
+      <p>Uswap is designed with accessibility in mind — every interactive element carries a screen-reader label and role, touch targets are sized for reliable tapping, and the app respects your device's text-size settings. We're continuing to improve accessibility across the app; if you hit a barrier, let us know at <a href="mailto:support@joinuswap.com">support@joinuswap.com</a>.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="masthead-title">Uswap</div>
+    <div class="colophon">&copy; 2026 Uswap &mdash; a campus marketplace, verified by campus.</div>
+  </div>
+</footer>
+
+<script>
+  var navBtns = document.querySelectorAll('#primary-nav button[data-nav]');
+  var pages = document.querySelectorAll('section[data-page]');
+  function showPage(name) {
+    navBtns.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.nav === name ? 'true' : 'false'); });
+    pages.forEach(function (p) { p.hidden = p.dataset.page !== name; });
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+  }
+  navBtns.forEach(function (b) { b.addEventListener('click', function () { showPage(b.dataset.nav); }); });
+  document.querySelectorAll('[data-nav-link]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      showPage(link.dataset.navLink);
+      if (link.dataset.subLink) showSub(link.dataset.subLink);
+    });
+  });
+
+  var subBtns = document.querySelectorAll('#faq-subtabs button');
+  var subPanels = document.querySelectorAll('[data-sub-panel]');
+  function showSub(name) {
+    subBtns.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.sub === name ? 'true' : 'false'); });
+    subPanels.forEach(function (p) { p.hidden = p.dataset.subPanel !== name; });
+  }
+  subBtns.forEach(function (b) { b.addEventListener('click', function () { showSub(b.dataset.sub); }); });
+
+  function renderLegal(containerSelector, doc) {
+    var el = document.querySelector(containerSelector);
+    var html = '<span class="updated">Last updated ' + doc.updated + '</span><p>' + doc.intro + '</p>';
+    doc.sections.forEach(function (s) {
+      html += '<h3>' + s.heading + '</h3>';
+      s.body.split('\n\n').forEach(function (para) {
+        if (para.indexOf('• ') === 0 || para.indexOf('•') !== -1) {
+          var items = para.split('\n').map(function (l) { return l.replace(/^•\s*/, ''); });
+          html += '<ul>' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
+        } else {
+          html += '<p>' + para + '</p>';
+        }
+      });
+    });
+    el.innerHTML = html;
+  }
+
+  var PRIVACY = {
+    updated: 'July 4, 2026',
+    intro: 'Uswap ("we," "our," "us") operates a campus marketplace and service-exchange app for verified college students. This policy explains what information we collect, how we use it, and the choices you have. By creating an account, you agree to the practices described here.',
+    sections: [
+      { heading: '1. Information we collect', body: 'Account information: your name, campus email address, school, password (stored as a salted hash, never in plain text), and optional profile details like your phone number, bio, profile photo, and what you’re offering or looking for.\n\nVerification information: to confirm you’re a real, currently enrolled student, we collect either your .edu email domain or a photo of your student ID and ID number. ID photos are used only for verification review and are not shown to other users.\n\nContent you create: marketplace listings, service storefront descriptions and photos, chat messages, swap proposals, reviews, and comments.\n\nPayment information: when you send or receive a payment, our payment processor Stripe collects and stores your card details directly — Uswap never receives or stores your full card number. We do store which payments were made, their amount, and their status so we can show you your transaction history.\n\nUsage and device information: things like app version, device type, crash logs, and general usage patterns, which help us fix bugs and improve the app. We also store an Expo push token if you enable push notifications, so we know where to deliver them.' },
+      { heading: '2. How we use your information', body: '• To create and secure your account, and confirm your student status before letting you message, pay, or list on campus.\n• To operate core features: showing your listings and storefront to other students, delivering chat messages, processing payments through Stripe, and sending schedule reminders.\n• To send notifications you’ve opted into (messages, payment activity, swap updates, marketplace comments, reviews, verification decisions, schedule reminders) — you can turn these on or off individually in Settings → Notifications.\n• To keep the platform safe: reviewing reported content, enforcing blocks between users, and investigating suspected fraud or policy violations.\n• To improve Uswap: understanding which features are used, and personalizing recommendations (like the "For You" section) based on what you say you’re looking for.' },
+      { heading: '3. Who we share information with', body: 'Other students on your campus can see your profile, storefront, listings, reviews, and rating, and the content of any chat you’re part of. They cannot see your email, phone number, password, or verification documents.\n\nService providers we use to run Uswap: Stripe (payment processing), Cloudinary (photo hosting for listings, storefronts, and profiles), SendGrid (transactional email like verification codes), Expo (push notification delivery), and Supabase (our database host). Each only receives what it needs to do its job, and is contractually restricted from using your data for anything else.\n\nCampus administrators reviewing manual student-ID verification submissions see the ID photo and number you submit, solely to approve or reject your verification.\n\nWe may disclose information if required by law, subpoena, or to protect the safety of our users — for example, in response to a credible report of harassment or fraud.\n\nWe do not sell your personal information to third parties.' },
+      { heading: '4. Data retention and deletion', body: 'We keep your account information for as long as your account is active. If you delete your account (Settings → Account → Delete account), we permanently remove your profile, listings, storefront, and messages within a few business days, except where we’re required to retain records (for example, completed payment records, for tax and fraud-prevention purposes).' },
+      { heading: '5. Security', body: 'We use industry-standard measures to protect your data, including encrypted connections (HTTPS) between the app and our servers, hashed passwords, and access controls limiting who inside Uswap can view sensitive data like verification documents. No system is perfectly secure, so we encourage you to use a strong, unique password.' },
+      { heading: '6. Your choices', body: '• Notification preferences: toggle any notification category on or off in Settings → Notifications.\n• Profile visibility: control what appears on your public storefront by editing or hiding individual listings and services from your Profile.\n• Access and correction: update your name, phone number, bio, and other profile details any time in Settings → Account or Profile → Edit.\n• Deletion: request full account deletion at any time from Settings → Account.\n• Blocking: block any user from a chat thread’s options menu to stop them from contacting you or seeing your listings.' },
+      { heading: '7. Student status and age', body: 'Uswap is built for current college students and requires a valid campus email or student ID to fully use the app. It is not directed at children, and we don’t knowingly collect information from anyone under 13.' },
+      { heading: '8. Changes to this policy', body: 'If we make material changes to this policy, we’ll update the "last updated" date above and, for significant changes, notify you in-app.' },
+      { heading: '9. Contact us', body: 'Questions about this policy or your data? Email us at support@joinuswap.com.' }
+    ]
+  };
+
+  var TERMS = {
+    updated: 'July 4, 2026',
+    intro: 'These terms govern your use of Uswap, a campus marketplace and service-exchange app. By creating an account, you agree to these terms. If you don’t agree, please don’t use Uswap.',
+    sections: [
+      { heading: '1. Eligibility', body: 'You must be at least 17 years old and either hold a valid .edu email address at a supported school or successfully complete manual verification with a student ID before you can message other users, send or receive payments, or list services and items. You’re responsible for keeping your login credentials secure and for all activity on your account.' },
+      { heading: '2. What Uswap is (and isn’t)', body: 'Uswap is a platform that lets students discover, list, and arrange services, items, and swaps with other students on their campus. We are not a party to any transaction, swap, or agreement between users — we don’t inspect items, verify service quality, or guarantee that any listing is accurate. You’re dealing directly with other students, and you’re responsible for using good judgment.' },
+      { heading: '3. Acceptable use', body: 'You agree not to:\n• List or offer anything illegal, stolen, counterfeit, or that violates campus policy (including academic-integrity violations such as paying someone to write papers, complete assignments, or take exams for you).\n• Harass, threaten, discriminate against, or impersonate another user.\n• Post false, misleading, or fraudulent listings, reviews, or messages.\n• Attempt to circumvent student verification, create multiple accounts to evade a block or suspension, or use the app for anything other than personal, non-commercial campus trading.\n• Use automated tools (scrapers, bots) to access Uswap without our written permission.\n\nWe may remove content, suspend, or permanently terminate accounts that violate these terms, with or without notice, depending on severity.' },
+      { heading: '4. Listings, services, and swaps', body: 'You’re solely responsible for the accuracy of anything you list — pricing, condition, description, and photos. Swap proposals and completed services are agreements between the users involved; Uswap facilitates the discovery and communication but does not guarantee performance by either party. We recommend meeting in public, well-lit campus locations for any in-person exchange.' },
+      { heading: '5. Payments', body: 'Payments made through Uswap are processed by Stripe. By sending or requesting a payment, you authorize Stripe to process it on our behalf. Refunds and disputes over the quality or delivery of a service or item are between the users involved — Uswap can assist by reviewing chat history and payment records if a dispute is reported, but we don’t guarantee a resolution or a refund. Report suspected payment fraud to us immediately.' },
+      { heading: '6. Reviews and ratings', body: 'Reviews must reflect a genuine transaction or interaction you had with the reviewed user. Fake, retaliatory, or paid-for reviews are prohibited and may be removed, and repeated violations can result in account suspension.' },
+      { heading: '7. Content you post', body: 'You retain ownership of the content you post (listings, photos, messages, reviews). By posting it, you grant Uswap a limited license to store, display, and distribute it within the app so other students can see it — for example, showing your listing photos in search results and on your storefront. This license ends when you delete the content or your account, except for copies already shared with other users (like a message you sent).' },
+      { heading: '8. Safety', body: 'Uswap verifies student status but does not run criminal background checks on users. Use common sense: meet in public campus locations, tell a friend when meeting a stranger, and trust your instincts. Block and report any user who makes you uncomfortable.' },
+      { heading: '9. Termination', body: 'You may delete your account at any time from Settings → Account. We may suspend or terminate your access if you violate these terms, misuse the platform, or if your student verification can no longer be confirmed.' },
+      { heading: '10. Disclaimers and limitation of liability', body: 'Uswap is provided "as is," without warranties of any kind. We don’t guarantee the app will be uninterrupted, error-free, or that any listing, service, or user is trustworthy. To the fullest extent permitted by law, Uswap is not liable for any indirect, incidental, or consequential damages arising from your use of the app, or from a transaction, swap, or interaction with another user.' },
+      { heading: '11. Changes to these terms', body: 'We may update these terms as Uswap grows. We’ll update the "last updated" date above, and for significant changes, we’ll notify you in-app before they take effect.' },
+      { heading: '12. Contact us', body: 'Questions about these terms? Email us at support@joinuswap.com.' }
+    ]
+  };
+
+  renderLegal('[data-sub-panel="privacy"]', PRIVACY);
+  renderLegal('[data-sub-panel="terms"]', TERMS);
+</script>
+</body>
+</html>
