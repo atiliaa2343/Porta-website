@@ -461,28 +461,103 @@
 <script>
   var navBtns = document.querySelectorAll('#primary-nav button[data-nav]');
   var pages = document.querySelectorAll('section[data-page]');
+  var subBtns = document.querySelectorAll('#faq-subtabs button');
+  var subPanels = document.querySelectorAll('[data-sub-panel]');
+  var currentSub = 'faq';
+
+  function buildRoute(page, sub) {
+    if (page === 'home') return '/';
+    if (page === 'faq') {
+      if (sub === 'privacy') return '/faq/privacy';
+      if (sub === 'terms') return '/faq/terms';
+      return '/faq';
+    }
+    return '/' + page;
+  }
+
+  function parseRoute(pathname) {
+    var path = pathname.replace(/\/+$|^\/+$/g, '');
+    switch (path) {
+      case '':
+      case 'home':
+        return { page: 'home' };
+      case 'faq':
+        return { page: 'faq', sub: 'faq' };
+      case 'faq/privacy':
+      case 'privacy':
+        return { page: 'faq', sub: 'privacy' };
+      case 'faq/terms':
+      case 'terms':
+        return { page: 'faq', sub: 'terms' };
+      case 'guidelines':
+        return { page: 'guidelines' };
+      case 'support':
+        return { page: 'support' };
+      case 'about':
+        return { page: 'about' };
+      default:
+        return { page: 'home' };
+    }
+  }
+
   function showPage(name) {
     navBtns.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.nav === name ? 'true' : 'false'); });
     pages.forEach(function (p) { p.hidden = p.dataset.page !== name; });
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
   }
-  navBtns.forEach(function (b) { b.addEventListener('click', function () { showPage(b.dataset.nav); }); });
-  document.querySelectorAll('[data-nav-link]').forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      showPage(link.dataset.navLink);
-      if (link.dataset.subLink) showSub(link.dataset.subLink);
+
+  function showSub(name) {
+    currentSub = name || 'faq';
+    subBtns.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.sub === currentSub ? 'true' : 'false'); });
+    subPanels.forEach(function (p) { p.hidden = p.dataset.subPanel !== currentSub; });
+  }
+
+  function navigate(page, sub, replace) {
+    var route = buildRoute(page, sub);
+    var state = { page: page, sub: sub };
+    if (replace) {
+      window.history.replaceState(state, '', route);
+    } else {
+      window.history.pushState(state, '', route);
+    }
+    showPage(page);
+    if (page === 'faq') {
+      showSub(sub || currentSub || 'faq');
+    }
+  }
+
+  function handleLocation() {
+    var route = parseRoute(window.location.pathname);
+    currentSub = route.sub || 'faq';
+    showPage(route.page);
+    if (route.page === 'faq') {
+      showSub(currentSub);
+    }
+  }
+
+  navBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var sub = b.dataset.nav === 'faq' ? 'faq' : undefined;
+      navigate(b.dataset.nav, sub);
     });
   });
 
-  var subBtns = document.querySelectorAll('#faq-subtabs button');
-  var subPanels = document.querySelectorAll('[data-sub-panel]');
-  function showSub(name) {
-    subBtns.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.sub === name ? 'true' : 'false'); });
-    subPanels.forEach(function (p) { p.hidden = p.dataset.subPanel !== name; });
-  }
-  subBtns.forEach(function (b) { b.addEventListener('click', function () { showSub(b.dataset.sub); }); });
+  document.querySelectorAll('[data-nav-link]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      navigate(link.dataset.navLink, link.dataset.subLink);
+    });
+  });
+
+  subBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      navigate('faq', b.dataset.sub);
+    });
+  });
+
+  window.addEventListener('popstate', handleLocation);
+  handleLocation();
 
   function renderLegal(containerSelector, doc) {
     var el = document.querySelector(containerSelector);
